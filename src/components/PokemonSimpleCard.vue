@@ -1,12 +1,13 @@
 <template>
   <div 
     @click="selectPokemon" 
-    :class="{'ring-2 ring-blue-400': selected}" 
-    class="max-w-sm w-full p-0 transition-transform transform 
-      hover:ring-2 hover:ring-blue-300 border border-transparent 
-      shadow-sm rounded-lg"
+    :class="{
+      'ring-2 ring-blue-400': selected,
+      'hover:ring-2 hover:ring-blue-300 transition-transform transform hover:shadow-lg duration-300': !selected && store.lengthSelectedPokemons < 6
+    }" 
+    class="max-w-sm w-full p-0 border border-transparent rounded-lg shadow-md"
   >
-    <div class="bg-white rounded-lg shadow-lg hover:shadow-2xl overflow-hidden transition-shadow duration-300">
+    <div class="bg-white rounded-lg overflow-hidden ">
       <img 
         :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`" 
         :alt="pokemon?.name" 
@@ -27,15 +28,22 @@ import type { Pokemon } from '@/interfaces/pokemon';
 const props = defineProps<{
   pokemon: Pokemon,
 }>()
+const emit = defineEmits(['onSelect'])
 const store = usePokemonStore()
 const selected = ref<boolean>(false)
 
 const selectPokemon = () => {
-  selected.value = !selected.value
-  if(selected.value) {
+  if (store.lengthSelectedPokemons < 6 && !selected.value) {
     store.addPokemonToTeam(props.pokemon.id)
-  } else {
+    selected.value = true
+    emit('onSelect', { pokemon: props.pokemon, selected: selected.value })
+    return;
+  }
+
+  if(selected.value) {
     store.removePokemonFromTeam(props.pokemon.id)
+    selected.value = false
+    emit('onSelect', { pokemon: props.pokemon, selected: selected.value })
   }
 }
 </script>

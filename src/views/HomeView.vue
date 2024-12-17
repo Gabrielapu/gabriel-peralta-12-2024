@@ -1,13 +1,51 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { usePokemonStore } from '../stores/pokemon'
 import PokemonSimpleCard from '../components/PokemonSimpleCard.vue'
+import ModifyTeamNotification from '@/components/ModifyTeamNotification.vue';
 
 const store = usePokemonStore()
+const pokemonName = ref<string>('')
+const pokemonSelected = ref<boolean>(false)
+const isLoading = ref<boolean>(false);
+const offset = ref<number>(0);
+const limit = 15;
+const pxToLoadNewPokemons = 200
 
 onMounted(() => {
-  store.getPokemonList()
+  loadPokemon();
+  window.removeEventListener('scroll', onScroll);
+
 })
+
+function onSelect (event: any) {
+  pokemonName.value = event.pokemon.name
+  pokemonSelected.value = event.selected
+}
+
+const loadPokemon = async () => {
+  if (isLoading.value) return; // Evitar múltiples peticiones simultáneas
+  isLoading.value = true;
+
+  try {
+    await store.getPokemonList(offset.value, limit);
+    offset.value += limit;
+  } finally {
+    isLoading.value = false; 
+  }
+};
+
+const onScroll = () => {
+  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  if (scrollTop + clientHeight >= scrollHeight - pxToLoadNewPokemons) {
+    loadPokemon();
+  }
+};
+
+onMounted(() => {
+  loadPokemon(); // Cargar los primeros datos
+  window.addEventListener('scroll', onScroll); // Escuchar el scroll
+});
 </script>
 
 <template>
@@ -16,6 +54,12 @@ onMounted(() => {
       v-for="pokemon, idx in store.pokemonList" 
       :key="idx" 
       :pokemon="pokemon"
+      @onSelect="e => onSelect(e)"
     />
   </div>
+  <ModifyTeamNotification 
+    :pokemon-name="pokemonName" 
+    :selected="pokemonSelected" 
+    @clearProps="pokemonName = '', pokemonSelected = false"  
+  />
 </template>

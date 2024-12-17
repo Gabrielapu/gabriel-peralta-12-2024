@@ -7,21 +7,35 @@ export const usePokemonStore = defineStore('pokemon', () => {
   const pokemonList = ref<Pokemon[]>([])
   const selectedPokemons = ref<Pokemon['id'][]>([])
 
-  async function getPokemonList() {
-    const response = await api.get('/pokemon?offset=151&limit=151')
-    pokemonList.value = response.data.results.map((pokemon : Pokemon) => {
-      const id = pokemon.url.split('/').slice(-2, -1)[0]; // Permite extraer el ID de la URL
+  const lengthSelectedPokemons = computed(() => selectedPokemons.value.length)
+
+  async function getPokemonList(offset: number, limit: number) {
+    const response = await api.get('/pokemon', {
+      params: { offset, limit },
+    })
+
+    const mappedData = response.data.results.map((pokemon : Pokemon) => {
+      const id = pokemon.url?.split('/').slice(-2, -1)[0]; // Obtener el id en base a la url
       return { name: pokemon.name, id: id };
     });
+
+    pokemonList.value = [...pokemonList.value, ...mappedData];
   }
 
-  function addPokemonToTeam(pokemonId: number) {
+  function addPokemonToTeam(pokemonId: number | string) {
     selectedPokemons.value.push(pokemonId)
   }
 
-  function removePokemonFromTeam(pokemonId: number) {
-    selectedPokemons.value = selectedPokemons.value.filter((id: number) => id !== pokemonId)
+  function removePokemonFromTeam(pokemonId: number | string) {
+    selectedPokemons.value = selectedPokemons.value.filter((id: any) => id !== pokemonId)
   }
 
-  return { pokemonList, getPokemonList, selectedPokemons, addPokemonToTeam, removePokemonFromTeam }
+  return { 
+    pokemonList, 
+    lengthSelectedPokemons, 
+    selectedPokemons, 
+    getPokemonList, 
+    addPokemonToTeam, 
+    removePokemonFromTeam
+  }
 })
