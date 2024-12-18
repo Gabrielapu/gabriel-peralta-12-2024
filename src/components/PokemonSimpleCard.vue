@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { usePokemonStore } from '../stores/pokemon'
 import type { Pokemon } from '@/interfaces/pokemon';
 
@@ -31,6 +31,10 @@ const props = defineProps<{
 const emit = defineEmits(['onSelect'])
 const store = usePokemonStore()
 const selected = ref<boolean>(false)
+
+onMounted(() => {
+  selected.value = store.selectedPokemons.includes(props.pokemon.id)
+})
 
 const selectPokemon = () => {
   if (store.lengthSelectedPokemons < 6 && !selected.value) {

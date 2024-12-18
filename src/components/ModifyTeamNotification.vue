@@ -1,9 +1,15 @@
 <template>
   <div
     v-if="visible"
-    class="fixed top-2 right-2 bg-blue-500 text-white px-4 py-3 rounded-md shadow-lg transition-transform transform scale-100 z-50 flex items-center"
+    class="fixed top-2 right-2 bg-blue-500 text-white px-4 py-3 rounded-md 
+      shadow-lg transition-transform transform scale-100 z-50 flex items-center"
   >
-    <img src="../assets/x.svg" class="w-6 h-6 text-white mr-1" alt="" @click="visible = false">
+    <span 
+      @click="visible = false" 
+      class="text-white mr-2 text-xl cursor-pointer"
+    >
+        &times;
+    </span>
     <div>
       {{ selected ? 'Agregaste' : 'Eliminaste' }} a <strong>{{ pokemonName }}</strong> {{ selected ? 'a' : 'de' }} tu equipo! 
       <span>{{ `(${store.lengthSelectedPokemons}/6)` }}</span>
@@ -11,7 +17,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import { usePokemonStore } from '@/stores/pokemon';
 import { ref, watch } from 'vue';
 
