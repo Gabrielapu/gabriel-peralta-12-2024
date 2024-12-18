@@ -31,6 +31,7 @@ const limit = 25;
 const pxToLoadNewPokemons = 200
 
 onMounted(() => {
+  store.resetPokemonList();
   loadPokemon();
   window.addEventListener('scroll', onScroll);
 })

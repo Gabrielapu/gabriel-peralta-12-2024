@@ -6,8 +6,18 @@ import type { Pokemon } from '@/interfaces/pokemon'
 export const usePokemonStore = defineStore('pokemon', () => {
   const pokemonList = ref<Pokemon[]>([])
   const selectedPokemons = ref<Pokemon['id'][]>([])
+  const pokemonTeamData = ref<any[]>([])
 
   const lengthSelectedPokemons = computed(() => selectedPokemons.value.length)
+
+  function resetPokemonList() {
+    pokemonList.value = []
+  }
+
+  function deleteFromTeam(id: number | string) {
+    selectedPokemons.value = selectedPokemons.value.filter((pokemonId) => pokemonId != id)
+    pokemonTeamData.value = pokemonTeamData.value.filter((pokemon) => pokemon.id !== id)
+  }
 
   async function getPokemonList(offset: number, limit: number) {
     const response = await api.get('/pokemon', {
@@ -22,6 +32,14 @@ export const usePokemonStore = defineStore('pokemon', () => {
     pokemonList.value = [...pokemonList.value, ...mappedData];
   }
 
+  async function getPokemonTeamData() {
+    const pokemonRequests = selectedPokemons.value.map((id) =>
+      api.get(`/pokemon/${id}`)
+    );
+    const responses = await Promise.all(pokemonRequests);
+    pokemonTeamData.value = responses.map((response) => response.data);
+  }
+
   function addPokemonToTeam(pokemonId: number | string) {
     selectedPokemons.value.push(pokemonId)
   }
@@ -34,8 +52,12 @@ export const usePokemonStore = defineStore('pokemon', () => {
     pokemonList, 
     lengthSelectedPokemons, 
     selectedPokemons, 
+    pokemonTeamData,
     getPokemonList, 
     addPokemonToTeam, 
-    removePokemonFromTeam
+    removePokemonFromTeam,
+    getPokemonTeamData,
+    resetPokemonList,
+    deleteFromTeam
   }
 })
