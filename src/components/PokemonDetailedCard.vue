@@ -4,7 +4,7 @@
       transition-transform transform hover:translate-y-1 hover:shadow-lg"
   >
     <PokemonImage 
-      class="h-40 w-40" 
+      class="h-40 w-40 mt-3" 
       :pokemon="pokemon" 
       @goToPokemonPage="goToPokemonPage" 
     />

@@ -1,8 +1,8 @@
 <template>
   <div
     v-if="visible"
-    class="fixed bottom-10 right-10 bg-blue-500 text-white px-4 py-3 rounded-md 
-      shadow-lg transition-transform transform scale-100 z-50 flex items-center"
+    class="fixed bottom-3 right-3 lg:bottom-8 lg:right-8 bg-blue-500 text-white px-4 
+      py-3 rounded-md shadow-lg transition-transform transform scale-100 z-50 flex items-center"
   >
     <span 
       @click="visible = false" 

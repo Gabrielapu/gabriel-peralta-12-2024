@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-center justify-center h-[50vh]">
-    <p class="text-xl text-gray-700 mb-6">
+    <p class="text-xl text-gray-700 mb-6 px-5 text-center">
       Este pokemon no pertenece a tu equipo, seleccionalo en el inicio!
     </p>
     <router-link 

@@ -7,7 +7,9 @@ import { useSplitUrl } from '@/composables/useSplitUrl'
 
 export const usePokemonStore = defineStore('pokemon', () => {
   const pokemonList = ref<Pokemon[]>([])
-  const selectedPokemons = ref<Pokemon['id'][]>([])
+  const selectedPokemons = ref<Pokemon['id'][]>(
+    JSON.parse(localStorage.getItem('pokemonTeam') || '[]')
+  )
   const pokemonTeamData = ref<Pokemon[]>([])
   const detailedPokemonData = ref<Pokemon>({} as Pokemon)
   const evolutionChain = ref<PokemonChain>({} as PokemonChain)
@@ -54,10 +56,16 @@ export const usePokemonStore = defineStore('pokemon', () => {
 
   function addPokemonToTeam(pokemonId: number) {
     selectedPokemons.value.push(pokemonId)
+    setLocalStorage()
   }
 
   function removePokemonFromTeam(pokemonId: number) {
     selectedPokemons.value = selectedPokemons.value.filter((id: any) => id !== pokemonId)
+    setLocalStorage()
+  }
+
+  function setLocalStorage() {
+    localStorage.setItem('pokemonTeam', JSON.stringify(selectedPokemons.value))
   }
 
   return { 

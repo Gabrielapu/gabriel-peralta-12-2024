@@ -1,13 +1,13 @@
 <template>
   <div class="w-full p-4 bg-white shadow-md rounded-lg">
     <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Cadena Evolutiva</h2>
-    <div class="flex justify-center items-center">
+    <div class="flex justify-center items-center flex-col lg:flex-row">
       <div
         v-for="(pokemon, index) in evolutionChain"
         :key="pokemon.name"
-        class="flex items-center"
+        class="flex items-center flex-col lg:flex-row mb-4 lg:mb-2"
       >
-        <div class="flex flex-col items-center space-y-2">
+        <div class="flex flex-col items-center">
           <img
             :src="
               `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/${pokemon.id}.svg`
@@ -19,9 +19,9 @@
         </div>
         <div 
           v-if="index < (evolutionChain?.length || 0) - 1" 
-          class="mx-4 text-gray-400 text-3xl"
+          class="m-4 text-gray-400 text-3xl"
         >
-          ➡️
+          <div class="rotate-90 lg:rotate-0">➡️</div>
         </div>
       </div>
     </div>
