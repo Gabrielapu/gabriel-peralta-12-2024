@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import api from '@/plugins/axios'
 import type { Pokemon } from '@/interfaces/pokemon'
 import type { PokemonChain } from '@/interfaces/pokemonChain'
+import { useSplitUrl } from '@/composables/useSplitUrl'
 
 export const usePokemonStore = defineStore('pokemon', () => {
   const pokemonList = ref<Pokemon[]>([])
@@ -27,7 +28,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
     })
 
     const mappedData = response.data.results.map((pokemon : Pokemon) => {
-      const id = pokemon.url?.split('/').slice(-2, -1)[0] || ''; // Obtener el id en base a la url
+      const id = useSplitUrl(pokemon.url || '', '/');
       return { name: pokemon.name, id: parseInt(id) };
     });
 

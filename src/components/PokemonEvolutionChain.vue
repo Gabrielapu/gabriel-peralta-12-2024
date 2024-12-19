@@ -29,9 +29,9 @@
 </template>
 
 <script setup lang="ts">
-import type { PokemonChain } from "@/interfaces/pokemonChain";
 import { usePokemonStore } from "@/stores/pokemon";
 import { ref, onMounted } from "vue";
+import { useSplitUrl } from "@/composables/useSplitUrl";
 
 interface Chain {
   id: number;
@@ -57,7 +57,7 @@ onMounted(() => {
 
 function parseChain(chain: RawChain): Chain[] {
   if (!chain) return [];
-  const id = chain.species.url.split('/').slice(-2, -1)[0];
+  const id = useSplitUrl(chain.species.url, '/');
   const parsedChain: Chain[] = [
     {
       id: parseInt(id),
