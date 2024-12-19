@@ -53,6 +53,7 @@ export const usePokemonStore = defineStore('pokemon', () => {
   function deleteFromTeam(id: number): void {
     selectedPokemons.value = selectedPokemons.value.filter((pokemonId: number) => pokemonId !== id)
     pokemonTeamData.value = pokemonTeamData.value.filter((pokemon: Pokemon) => pokemon.id !== id)
+    setLocalStorage()
   }
 
   function addPokemonToTeam(pokemonId: number):void {

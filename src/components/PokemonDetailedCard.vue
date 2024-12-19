@@ -15,13 +15,14 @@
     <PokemonAudioPlayer :audioSrc="pokemon.cries.latest" />
     <hr class="my-3 border-gray-300">
     <PokemonStatsChart :pokemonStats="pokemon.stats" />
-    <button 
+    <!-- <button 
       @click="deleteFromTeam()" 
       class="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold 
-        py-2 px-4 rounded fixed top-0 right-3"
+        py-1 px-2 lg:py-2 lg:px-4 rounded fixed top-0 right-3"
     >
       Eliminar
-    </button>
+    </button> -->
+    <ConfirmDelete :itemName="pokemon.name" @confirm="deleteFromTeam()" />
   </div>
 </template>
 
@@ -33,6 +34,7 @@ import PokemonStatsChart from './PokemonStatsChart.vue';
 import PokemonTypes from './PokemonTypes.vue';
 import PokemonImage from './PokemonImage.vue';
 import type { Pokemon } from '@/interfaces/pokemon';
+import ConfirmDelete from './ConfirmDelete.vue';
 
 const store = usePokemonStore()
 const router = useRouter()
