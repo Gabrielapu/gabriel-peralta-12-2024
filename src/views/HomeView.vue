@@ -11,7 +11,7 @@
   <ModifyTeamNotification 
     :pokemon-name="pokemonName" 
     :selected="pokemonSelected" 
-    @clearProps="pokemonName = '', pokemonSelected = false"  
+    @clearProps="clearProps()"  
   />
 </template>
 
@@ -21,6 +21,7 @@ import { usePokemonStore } from '../stores/pokemon'
 import PokemonSimpleCard from '../components/PokemonSimpleCard.vue'
 import ModifyTeamNotification from '@/components/ModifyTeamNotification.vue';
 import Spinner from '@/components/ui/Spinner.vue';
+import type { Pokemon } from '@/interfaces/pokemon';
 
 const store = usePokemonStore()
 const pokemonName = ref<string>('')
@@ -30,18 +31,28 @@ const offset = ref<number>(0);
 const limit = 25;
 const pxToLoadNewPokemons = 200
 
+interface selectedPokemon {
+  pokemon: Pokemon;
+  selected: boolean;
+}
+
 onMounted(() => {
   store.resetPokemonList();
   loadPokemon();
   window.addEventListener('scroll', onScroll);
 })
 
-function onSelect (event: any) {
+function onSelect (event: selectedPokemon): void {
   pokemonName.value = event.pokemon.name
   pokemonSelected.value = event.selected
 }
 
-const loadPokemon = async () => {
+function clearProps (): void {
+  pokemonName.value = ''
+  pokemonSelected.value = false
+}
+
+async function loadPokemon(): Promise<void> {
   if (isLoading.value) return;
   isLoading.value = true;
 
@@ -53,7 +64,7 @@ const loadPokemon = async () => {
   }
 };
 
-const onScroll = () => {
+function onScroll(): void {
   const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
   if (scrollTop + clientHeight >= scrollHeight - pxToLoadNewPokemons) {
     loadPokemon();

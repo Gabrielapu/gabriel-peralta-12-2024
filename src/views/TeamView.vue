@@ -1,6 +1,9 @@
 <template>
   <Spinner v-if="isLoading" />
-  <div v-if="store.lengthSelectedPokemons" class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 p-4">
+  <div 
+    v-if="store.lengthSelectedPokemons" 
+    class="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 p-4"
+  >
     <PokemonDetailedCard 
       v-for="pokemon, idx in store.pokemonTeamData" 
       :key="idx" 

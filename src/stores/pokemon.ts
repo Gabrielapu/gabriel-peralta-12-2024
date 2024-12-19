@@ -2,17 +2,18 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import api from '@/plugins/axios'
 import type { Pokemon } from '@/interfaces/pokemon'
+import type { PokemonChain } from '@/interfaces/pokemonChain'
 
 export const usePokemonStore = defineStore('pokemon', () => {
   const pokemonList = ref<Pokemon[]>([])
   const selectedPokemons = ref<Pokemon['id'][]>([])
-  const pokemonTeamData = ref<any[]>([])
-  const detailedPokemonData = ref<any[]>([])
-  const evolutionChain = ref<any[]>([])
+  const pokemonTeamData = ref<Pokemon[]>([])
+  const detailedPokemonData = ref<Pokemon>({} as Pokemon)
+  const evolutionChain = ref<PokemonChain>({} as PokemonChain)
 
   const lengthSelectedPokemons = computed(() => selectedPokemons.value.length)
 
-  async function getPokemonData(id: number | string) {
+  async function getPokemonData(id: number) {
     const pokemon = await api.get(`/pokemon/${id}`)
     const species = await api.get(`/pokemon-species/${id}`)
     const respEvolutionChain = await api.get(`${species.data.evolution_chain.url.split('v2')[1]}`)
@@ -26,15 +27,15 @@ export const usePokemonStore = defineStore('pokemon', () => {
     })
 
     const mappedData = response.data.results.map((pokemon : Pokemon) => {
-      const id = pokemon.url?.split('/').slice(-2, -1)[0]; // Obtener el id en base a la url
-      return { name: pokemon.name, id: id };
+      const id = pokemon.url?.split('/').slice(-2, -1)[0] || ''; // Obtener el id en base a la url
+      return { name: pokemon.name, id: parseInt(id) };
     });
 
     pokemonList.value = [...pokemonList.value, ...mappedData];
   }
 
   async function getPokemonTeamData() {
-    const pokemonRequests = selectedPokemons.value.map((id) =>
+    const pokemonRequests = selectedPokemons.value.map((id: number) =>
       api.get(`/pokemon/${id}`)
     );
     const responses = await Promise.all(pokemonRequests);
@@ -45,16 +46,16 @@ export const usePokemonStore = defineStore('pokemon', () => {
     pokemonList.value = []
   }
 
-  function deleteFromTeam(id: number | string) {
-    selectedPokemons.value = selectedPokemons.value.filter((pokemonId) => pokemonId != id)
-    pokemonTeamData.value = pokemonTeamData.value.filter((pokemon) => pokemon.id !== id)
+  function deleteFromTeam(id: number) {
+    selectedPokemons.value = selectedPokemons.value.filter((pokemonId: number) => pokemonId !== id)
+    pokemonTeamData.value = pokemonTeamData.value.filter((pokemon: Pokemon) => pokemon.id !== id)
   }
 
-  function addPokemonToTeam(pokemonId: number | string) {
+  function addPokemonToTeam(pokemonId: number) {
     selectedPokemons.value.push(pokemonId)
   }
 
-  function removePokemonFromTeam(pokemonId: number | string) {
+  function removePokemonFromTeam(pokemonId: number) {
     selectedPokemons.value = selectedPokemons.value.filter((id: any) => id !== pokemonId)
   }
 

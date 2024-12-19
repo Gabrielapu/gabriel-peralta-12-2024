@@ -13,7 +13,11 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{ pokemonTypes: any }>();
+import type { Pokemon } from '@/interfaces/pokemon';
+
+defineProps<{ 
+  pokemonTypes: Pokemon['types'] | undefined
+}>();
 
 const typeColors: Record<string, string> = {
   normal: 'bg-gray-400',

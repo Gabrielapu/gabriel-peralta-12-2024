@@ -1,32 +1,36 @@
 <template>
-  <div>
-    <Bar
-      id="my-chart-id"
-      :options="{ responsive: true }"
-      :data="{
-        labels: chartLabels,
-        datasets: chartDataSets
-      }"
-    />
-  </div>
+  <Bar
+    id="my-chart-id"
+    :options="{ 
+      responsive: true,      
+    }"
+    :data="{
+      labels: chartLabels,
+      datasets: chartDataSets
+    }"
+  />
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ pokemonStats: any }>();
-
 import { Bar } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+import { 
+  Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale 
+} from 'chart.js'
 import { computed } from 'vue';
+import type { Pokemon } from '@/interfaces/pokemon';
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
+const props = defineProps<{ 
+  pokemonStats: Pokemon['stats'] | undefined
+}>();
 const chartLabels = computed(() => {
-  return props.pokemonStats.map((stat: any) => stat.stat.name);
+  return props.pokemonStats?.map((stat: Pokemon['stats'][number]) => stat.stat.name);
 })
 const chartDataSets = computed(() => {
   return [
     {
       label: 'Stats',
-      data: props.pokemonStats.map((stat: any) => stat.base_stat),
+      data: props.pokemonStats?.map((stat: Pokemon['stats'][number]) => stat.base_stat) || [],
       backgroundColor: [
         'rgba(255, 99, 132, 1)',
         'rgba(54, 162, 235, 1)', 

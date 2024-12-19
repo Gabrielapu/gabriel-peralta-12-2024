@@ -5,11 +5,8 @@
   </div>
 </template>
 
-<script setup>
-defineProps({
-  audioSrc: {
-    type: String,
-    required: true,
-  },
-})
+<script setup lang="ts">
+defineProps<{ 
+  audioSrc: string | undefined
+}>();
 </script>
